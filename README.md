@@ -1,39 +1,108 @@
-[FlapPyBird](https://sourabhv.github.io/FlapPyBird)
-===============
+# Flappy Bird - edicion hackeable para clase
 
-A Flappy Bird Clone made using [python-pygame][pygame]
+Este repositorio es una version docente de FlapPyBird pensada para trabajar
+en clases practicas. El objetivo es que puedas:
 
-> If you are in interested in the old one-file code for the game, you can [find it here][one-file-game]
+1. correr el juego rapido,
+2. encontrar variables importantes,
+3. entender que modulo controla cada comportamiento,
+4. resolver misiones sin leer todo el proyecto.
 
-[pygame]: http://www.pygame.org
-[one-file-game]: https://github.com/sourabhv/FlapPyBird/blob/038359dc6122f8d851e816ddb3e7d28229d585e5/flappy.py
+## Como correr
 
+1. Crea entorno virtual:
 
-Setup (as tested on MacOS)
----------------------------
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-1. Install Python 3 from [here](https://www.python.org/download/releases/) (or use brew/apt/pyenv)
+2. Instala dependencias:
 
-2. Run `make init` (this will install pip packages, use virtualenv or something similar if you don't want to install globally)
+```bash
+pip install -r requirements.txt
+```
 
-3. Run `make` to run the game. Run `DEBUG=True make` to see rects and coords
+3. Ejecuta el juego:
 
-4. Use <kbd>&uarr;</kbd> or <kbd>Space</kbd> key to play and <kbd>Esc</kbd> to close the game.
+```bash
+python main.py
+```
 
-5. Optionally run `make web` to run the game in the browser (`pygbag`).
+Controles:
+- `Space` o `ArrowUp`: saltar
+- `Esc`: cerrar
 
-Notable forks
--------------
-- [FlapPyBlink Blink to control the bird](https://github.com/sero583/FlappyBlink)
-- [FlappyBird Fury Mode](https://github.com/Cc618/FlapPyBird)
-- [FlappyBird Model Predictive Control](https://github.com/philzook58/FlapPyBird-MPC)
-- [FlappyBird OpenFrameworks Port](https://github.com/TheLogicMaster/ofFlappyBird)
-- [FlappyBird On Quantum Computing](https://github.com/WingCode/QuFlapPyBird)
+## Estructura rapida
 
-Made something awesome from FlapPyBird? Add it to the list :)
+- `main.py`: punto de entrada
+- `config.py`: valores editables del juego
+- `hacks.py`: cheats y modos especiales
+- `game/player.py`: reglas de movimiento del pajaro
+- `game/pipes.py`: velocidad, gap y dificultad de tubos
+- `game/score.py`: reglas de puntaje
+- `game/collision.py`: reglas de derrota/supervivencia
+- `game/ui.py`: HUD (score, vidas, hacks activos)
+- `src/`: motor real del juego (render, entidades, loop)
 
+## Si quieres hackear el juego, parte por config.py
 
-Demo
-----------
+Cambios rapidos sugeridos:
 
-https://user-images.githubusercontent.com/2307626/130682424-9254b32d-efe0-406e-a6ea-3fb625a2df5e.mp4
+- `GRAVITY`: cuanto cae el pajaro
+- `JUMP_STRENGTH`: cuanto sube al saltar
+- `PIPE_SPEED`: velocidad base de tubos
+- `PIPE_GAP`: espacio entre tubos
+- `START_LIVES`: vidas iniciales
+- `SCORE_PER_PIPE`: puntaje por tubo cruzado
+
+## Cheats listos para usar (hacks.py)
+
+Pon `True` en cualquiera de estas banderas:
+
+- `GOD_MODE`
+- `INFINITE_LIVES`
+- `DOUBLE_SCORE`
+- `NO_GRAVITY`
+- `SLOW_PIPES`
+- `BIG_GAP_MODE`
+- `NO_FLOOR_DEATH`
+
+## Primeras misiones sugeridas
+
+- Hacer el salto mas fuerte
+- Hacer los tubos mas lentos
+- Activar modo dios
+- Duplicar puntaje
+- Cambiar la regla de derrota
+
+Revisa [MISIONES.md](MISIONES.md) para el itinerario completo.
+
+## Comportamientos y donde mirar
+
+- El pajaro cae:
+	- `config.py` (`GRAVITY`)
+	- `game/player.py` (`gravity`)
+- El pajaro salta:
+	- `config.py` (`JUMP_STRENGTH`)
+	- `game/player.py` (`jump_strength`)
+- Los tubos avanzan:
+	- `config.py` (`PIPE_SPEED`)
+	- `game/pipes.py` (`current_pipe_speed`)
+- Los tubos aparecen con distinto gap:
+	- `config.py` (`PIPE_GAP` y dificultad)
+	- `game/pipes.py` (`current_pipe_gap`)
+- El score sube:
+	- `config.py` (`SCORE_PER_PIPE`)
+	- `hacks.py` (`DOUBLE_SCORE`)
+	- `game/score.py` (`points_per_pipe`)
+- Se decide si pierdes o sobrevives:
+	- `game/collision.py` (`should_ignore_collision`)
+	- `hacks.py` (`GOD_MODE`, `NO_FLOOR_DEATH`, `INFINITE_LIVES`)
+
+## Archivos para clase
+
+- [MISIONES.md](MISIONES.md): misiones por nivel con objetivo, donde mirar y pista
+- [GUIA_PROFE.md](GUIA_PROFE.md): ruta sugerida de clase, dificultad y desbloqueos
+- [extras/soluciones_base.md](extras/soluciones_base.md): ideas de solucion guiadas
+- [extras/ideas_misiones_extra.md](extras/ideas_misiones_extra.md): desafios extendidos

@@ -1,6 +1,8 @@
 import random
 from typing import List
 
+from game import pipes as pipe_rules
+
 from ..utils import GameConfig
 from .entity import Entity
 
@@ -21,12 +23,17 @@ class Pipes(Entity):
 
     def __init__(self, config: GameConfig) -> None:
         super().__init__(config)
-        self.pipe_gap = 120
+        self.score = 0
+        self.pipe_gap = pipe_rules.current_pipe_gap(self.score)
         self.top = 0
         self.bottom = self.config.window.viewport_height
         self.upper = []
         self.lower = []
         self.spawn_initial_pipes()
+
+    def set_score(self, score: int) -> None:
+        self.score = max(0, score)
+        self.pipe_gap = pipe_rules.current_pipe_gap(self.score)
 
     def tick(self) -> None:
         if self.can_spawn_pipes():
@@ -86,12 +93,14 @@ class Pipes(Entity):
         gap_y += int(base_y * 0.2)
         pipe_height = self.config.images.pipe[0].get_height()
         pipe_x = self.config.window.width + 10
+        vel_x = -pipe_rules.current_pipe_speed(self.score)
 
         upper_pipe = Pipe(
             self.config,
             self.config.images.pipe[0],
             pipe_x,
             gap_y - pipe_height,
+            vel_x=vel_x,
         )
 
         lower_pipe = Pipe(
@@ -99,6 +108,7 @@ class Pipes(Entity):
             self.config.images.pipe[1],
             pipe_x,
             gap_y + self.pipe_gap,
+            vel_x=vel_x,
         )
 
         return upper_pipe, lower_pipe

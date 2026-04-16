@@ -1,5 +1,7 @@
 import pygame
 
+from game import score as score_rules
+
 from ..utils import GameConfig
 from .entity import Entity
 
@@ -14,7 +16,7 @@ class Score(Entity):
         self.score = 0
 
     def add(self) -> None:
-        self.score += 1
+        self.score += score_rules.points_per_pipe()
         self.config.sounds.point.play()
 
     @property

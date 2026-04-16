@@ -4,6 +4,9 @@ import sys
 import pygame
 from pygame.locals import K_ESCAPE, K_SPACE, K_UP, KEYDOWN, QUIT
 
+import config
+from game import collision, ui
+
 from .entities import (
     Background,
     Floor,
@@ -21,14 +24,14 @@ class Flappy:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Flappy Bird")
-        window = Window(288, 512)
+        window = Window(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
         screen = pygame.display.set_mode((window.width, window.height))
         images = Images()
 
         self.config = GameConfig(
             screen=screen,
             clock=pygame.time.Clock(),
-            fps=30,
+            fps=config.FPS,
             window=window,
             images=images,
             sounds=Sounds(),
@@ -85,10 +88,19 @@ class Flappy:
     async def play(self):
         self.score.reset()
         self.player.set_mode(PlayerMode.NORMAL)
+        lives = collision.starting_lives()
 
         while True:
             if self.player.collided(self.pipes, self.floor):
+                if collision.should_ignore_collision(self.player.crash_entity, lives):
+                    lives = collision.consume_life(lives)
+                    self.player = Player(self.config)
+                    self.player.set_mode(PlayerMode.NORMAL)
+                    self.pipes = Pipes(self.config)
+                    continue
                 return
+
+            self.pipes.set_score(self.score.score)
 
             for i, pipe in enumerate(self.pipes.upper):
                 if self.player.crossed(pipe):
@@ -104,6 +116,7 @@ class Flappy:
             self.pipes.tick()
             self.score.tick()
             self.player.tick()
+            ui.draw_hud(self.config.screen, self.score.score, lives)
 
             pygame.display.update()
             await asyncio.sleep(0)

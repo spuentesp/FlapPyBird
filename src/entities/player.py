@@ -3,6 +3,8 @@ from itertools import cycle
 
 import pygame
 
+from game import player as player_rules
+
 from ..utils import GameConfig, clamp
 from .entity import Entity
 from .floor import Floor
@@ -46,23 +48,23 @@ class Player(Entity):
 
     def reset_vals_normal(self) -> None:
         self.vel_y = -9  # player's velocity along Y axis
-        self.max_vel_y = 10  # max vel along Y, max descend speed
-        self.min_vel_y = -8  # min vel along Y, max ascend speed
-        self.acc_y = 1  # players downward acceleration
+        self.max_vel_y = player_rules.max_fall_speed()  # max descend speed
+        self.min_vel_y = player_rules.min_rise_speed()  # max ascend speed
+        self.acc_y = player_rules.gravity()  # players downward acceleration
 
         self.rot = 80  # player's current rotation
         self.vel_rot = -3  # player's rotation speed
         self.rot_min = -90  # player's min rotation angle
         self.rot_max = 20  # player's max rotation angle
 
-        self.flap_acc = -9  # players speed on flapping
+        self.flap_acc = player_rules.jump_strength()  # players speed on flapping
         self.flapped = False  # True when player flaps
 
     def reset_vals_shm(self) -> None:
         self.vel_y = 1  # player's velocity along Y axis
         self.max_vel_y = 4  # max vel along Y, max descend speed
         self.min_vel_y = -4  # min vel along Y, max ascend speed
-        self.acc_y = 0.5  # players downward acceleration
+        self.acc_y = player_rules.gravity() * 0.5  # players downward acceleration
 
         self.rot = 0  # player's current rotation
         self.vel_rot = 0  # player's rotation speed

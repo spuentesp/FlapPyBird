@@ -1,3 +1,5 @@
+import config as game_settings
+
 from ..utils import GameConfig
 from .entity import Entity
 
@@ -5,7 +7,7 @@ from .entity import Entity
 class Floor(Entity):
     def __init__(self, config: GameConfig) -> None:
         super().__init__(config, config.images.base, 0, config.window.vh)
-        self.vel_x = 4
+        self.vel_x = game_settings.BACKGROUND_SCROLL_SPEED
         self.x_extra = self.w - config.window.w
 
     def stop(self) -> None:

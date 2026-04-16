@@ -2,6 +2,8 @@ import os
 
 import pygame
 
+import config
+
 from .images import Images
 from .sounds import Sounds
 from .window import Window
@@ -23,7 +25,12 @@ class GameConfig:
         self.window = window
         self.images = images
         self.sounds = sounds
-        self.debug = os.environ.get("DEBUG", False)
+        env_debug = os.environ.get("DEBUG")
+        self.debug = (
+            env_debug.lower() == "true"
+            if isinstance(env_debug, str)
+            else config.DEBUG
+        )
 
     def tick(self) -> None:
         self.clock.tick(self.fps)
